@@ -29,9 +29,9 @@ def extract_query() -> str:
 
 
 def get_pinecone_docs(query):
-    pinecone.init(api_key=os.environ.get("PINECONE_API_KEY"), environment=os.environ.get("PINECONE_API_ENV"))
+    pinecone.init(api_key=st.secrets["PINECONE_API_KEY"], environment=st.secrets["PINECONE_API_ENV"])
 
-    embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
+    embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["OPENAI_API_KEY"])
     llm = OpenAI(model_name="gpt-3.5-turbo", temperature=0)
     # embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     chain = load_qa_chain(llm, chain_type="stuff")
