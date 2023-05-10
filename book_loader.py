@@ -24,12 +24,12 @@ print (f'Now you have {len(texts)} documents')
 
 #Create embeddings of your documents to get ready for semantic search
 PINECONE_API_ENV = 'asia-southeast1-gcp-free'
-embeddings = OpenAIEmbeddings(openai_api_key=os.environ["OPENAI_API_KEY"])
+embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
 
 # initialize pinecone
 pinecone.init(
-    api_key=os.environ["PINECONE_API_KEY"],  # find at app.pinecone.io
-    environment=os.environ["PINECONE_API_ENV"]  # next to api key in console
+    api_key=os.environ.get("PINECONE_API_KEY"),  # find at app.pinecone.io
+    environment=os.environ.get("PINECONE_API_ENV")  # next to api key in console
 )
 index_name = "talk2satoshi" # put in the name of your pinecone index here
 
