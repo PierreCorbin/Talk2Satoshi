@@ -32,8 +32,7 @@ def get_pinecone_docs(query):
     pinecone.init(api_key=st.secrets["PINECONE_API_KEY"], environment=st.secrets["PINECONE_API_ENV"])
 
     embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["OPENAI_API_KEY"])
-    llm = OpenAI(model_name="gpt-3.5-turbo", temperature=0)
-    # embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+    llm = OpenAI(model_name="gpt-3.5-turbo", temperature=0.5)
     chain = load_qa_chain(llm, chain_type="stuff")
     docsearch = Pinecone.from_existing_index("talk2satoshi", embeddings)
     docs = docsearch.similarity_search(query, include_metadata=True)
