@@ -9,8 +9,6 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Pinecone
 
 
-os.environ["OPENAI_API_KEY"] = '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'
-
 # Step 1: Load the PDF of the book from the web
 pdf_url = "https://ebooksoff.xyz/AllNovelWorld.com/The-Price-Of-Tomorrow.pdf"
 pdf_loader = OnlinePDFLoader(pdf_url)
@@ -36,12 +34,12 @@ metadata = {
     "publication_date": book_publication_year
 }
 
-embeddings = OpenAIEmbeddings(openai_api_key=os.environ["OPENAI_API_KEY"])
+embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["OPENAI_API_KEY"])
 
 # Step 4: Connect to Pinecone
 pinecone.init(
-    api_key="90f9d808-44fe-44f3-901a-1b7b12d78688",
-    environment="asia-southeast1-gcp-free"
+    api_key=st.secrets["PINECONE_API_KEY"],
+    environment=st.secrets["PINECONE_API_ENV"]
 )
 index_name = "aitoshi"
 
