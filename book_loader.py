@@ -14,13 +14,10 @@ from langchain.chains.question_answering import load_qa_chain
 loader = OnlinePDFLoader("https://ebooksoff.xyz/AllNovelWorld.com/The-Price-Of-Tomorrow.pdf")
 
 data = loader.load()
-print (f'You have {len(data)} document(s) in your data')
-print (f'There are {len(data[0].page_content)} characters in your document')
 
 #Chunk your data up into smaller documents
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 texts = text_splitter.split_documents(data)
-print (f'Now you have {len(texts)} documents')
 
 #Create embeddings of your documents to get ready for semantic search
 PINECONE_API_ENV = 'asia-southeast1-gcp-free'
