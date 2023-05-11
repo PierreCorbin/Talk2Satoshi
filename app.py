@@ -51,7 +51,7 @@ def get_pinecone_docs(query):
     llm = OpenAI(model_name="gpt-3.5-turbo", temperature=0.7)
     chain = load_qa_chain(llm, chain_type="stuff")
     docsearch = Pinecone.from_existing_index("aitoshi", embeddings)
-    docs = docsearch.similarity_search(query, include_metadata=True)
+    docs = docsearch.similarity_search(query)
 
     # 4 - Le Prompt
     template = """Given the following extracted parts of a long document and a question, create a final answer with references ("SOURCES"). 
