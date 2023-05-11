@@ -1,33 +1,49 @@
-import os
+ 
+import langchain
 import pinecone
+import os
 
-from langchain.document_loaders import UnstructuredPDFLoader, OnlinePDFLoader
+from langchain.document_loaders import OnlinePDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-
-from langchain.vectorstores import Chroma, Pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.llms import OpenAI
-from langchain.chains.question_answering import load_qa_chain
+from langchain.vectorstores import Pinecone
 
 
+os.environ["OPENAI_API_KEY"] = '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'
 
-loader = OnlinePDFLoader("https://ebooksoff.xyz/AllNovelWorld.com/The-Price-Of-Tomorrow.pdf")
+# Step 1: Load the PDF of the book from the web
+pdf_url = "https://ebooksoff.xyz/AllNovelWorld.com/The-Price-Of-Tomorrow.pdf"
+pdf_loader = OnlinePDFLoader(pdf_url)
+pdf_text = pdf_loader.load()
 
-data = loader.load()
-
-#Chunk your data up into smaller documents
+# Step 2: Create a vector of the book using RecursiveCharacterTextSplitter
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-texts = text_splitter.split_documents(data)
+texts = text_splitter.split_documents(pdf_text)
 
-#Create embeddings of your documents to get ready for semantic search
-PINECONE_API_ENV = 'asia-southeast1-gcp-free'
-embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["OPENAI_API_KEY"])
+# Step 3: Create a metadata dictionary with the book info
+book_title = "The Price of Tomorrow"
+book_text = pdf_text
+book_author = "Jeff Booth"
+book_publisher = "St. Martin's Press"
+book_language = "English"
+book_publication_year = 2020
 
-# initialize pinecone
+
+metadata = {
+    "title": book_title,
+    "author": book_author,
+    "language": book_language,
+    "publication_date": book_publication_year
+}
+
+embeddings = OpenAIEmbeddings(openai_api_key=os.environ["OPENAI_API_KEY"])
+
+# Step 4: Connect to Pinecone
 pinecone.init(
-    api_key=st.secrets["PINECONE_API_KEY"],  # find at app.pinecone.io
-    environment=st.secrets["PINECONE_API_ENV"]  # next to api key in console
+    api_key="90f9d808-44fe-44f3-901a-1b7b12d78688",
+    environment="asia-southeast1-gcp-free"
 )
-index_name = "talk2satoshi" # put in the name of your pinecone index here
+index_name = "aitoshi"
 
-docsearch = Pinecone.from_texts([t.page_content for t in texts], embeddings, index_name=index_name)
+# Step 5: Upload the book and metadata to a Pinecone index
+docsearch = Pinecone.from_texts([t.page_content for t in texts], embeddings, index_name=index_name, metadatas=[{"source": f"{book_title}-{i}-pl"} for i in range(len(texts))])
